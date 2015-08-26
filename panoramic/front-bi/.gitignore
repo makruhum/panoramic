@@ -1,0 +1,9 @@
+/.project
+#modulos de node
+node_modules
+bower_components
+
+
+#archivos temporles
+.tmps
+/.tmp/

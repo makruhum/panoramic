@@ -1,0 +1,201 @@
+<!doctype html>
+<html class="no-js" ng-app="app" ng-controller="AppCtrl">
+    <head>
+        <meta charset="utf-8">
+        <title ng-bind="pageTitle" > </title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <!-- build:css(.) styles/vendor.css -->
+        <!-- bower:css -->
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css" />
+        <link rel="stylesheet" href="bower_components/pivottable/dist/pivot.css" />
+        <!-- endbower -->
+        <!-- endbuild -->
+        <!-- build:css(.tmp) styles/main.css -->
+        <link rel="stylesheet" href="styles/main.css">
+        <!-- endbuild -->
+        <link rel="stylesheet" href="styles/AdminLTE.min.css" />
+        <link rel="stylesheet" href="styles/customPivot.css" />
+    </head>
+    <body >
+        <!--[if lt IE 7]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
+
+        <div id="app" ng-show="!showLogin">
+
+            <nav class="navbar navbar-default bg-prmary navbar-fixed-top" role="navigation" style="margin-bottom: 0px;border: 0px; border-radius: 0px; ">
+                <!-- El logotipo y el icono que despliega el menú se agrupan
+para mostrarlos mejor en los dispositivos móviles -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target=".navbar-ex1-collapse">
+                        <span class="sr-only">Desplegar navegación</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#menu-toggle"  id="menu-toggle "><strong>BI</strong></a>
+                </div>
+
+                <!-- Agrupar los enlaces de navegación, los formularios y cualquier
+otro elemento que se pueda ocultar al minimizar la barra -->
+                <div class="collapse navbar-collapse navbar-ex1-collapse">
+
+                    <ul class="nav navbar-nav  navbar-left">
+                        <li class="dropdown" ng-repeat="row in Menu" ng-cloak ng-binding="row.name"  >
+                            <a  href="#" class="dropdown-toggle" data-toggle="dropdown" >
+                                <i class="{{row.icon}}"> </i>
+                                {{row.name}} <b ng-if="row.SubMenu" class="caret"></b>
+                            </a>
+                            <ul  class="dropdown-menu" >
+                                <li  ng-repeat="row in row.SubMenu" >
+                                    <a ui-sref="{{row.route}}" >
+                                        <i class="{{row.icon}}"> </i>  {{row.name}}
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-user"></i> {{currentUser.auth.email}}  <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#"><i class="fa fa-gear"></i>  Perfil</a></li>
+                                <li class="divider"></li>
+                                <li ng-if="!currentUser"><a ui-sref="auth" ><i class="fa fa-sign-out" ></i> Login</a></li>
+                                <li ng-if="currentUser" ><a href="#"ng-click="logout()" ><i class="fa fa-sign-out" ></i> Salir</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars"></i> Menu</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+
+   
+
+                <!-- Page Content -->
+                <div id="page-content-wrapper">
+                    <div class="container-fluid">
+
+
+                        <div class="row" style="margin-top:40px;" ui-view="main">
+                        </div>
+
+                    </div>
+                </div>
+                <!-- /#page-content-wrapper -->
+
+   
+
+        </div>
+
+        <div id="fullscreen_bg" class="fullscreen_bg login-show-hide" style=" position: absolute;   left: 0px; top: 0px; z-index: 999999999; clear:both;" ng-show="showLogin" />
+
+        <div class="container">
+
+            <form class="form-signin form-show-hide">
+                <h1 class="form-signin-heading text-muted"> </h1>
+                <input type="text" class="form-control" placeholder="Usuario" required="" autofocus="" ng-model="user.email">
+                <input type="password" class="form-control" placeholder="Password" required="" ng-model="user.password">
+                <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="showLogin=false ">
+                    Acceptar
+                </button>
+            </form>
+
+        </div>
+        </div>
+
+
+
+    <!--  <script type="text/ng-template" id="SubMenu.html">
+
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+SubMenu #1 <b class="caret"></b>
+</a>
+<ul class="dropdown-menu">
+<li><a href="#">Acción #1</a></li>
+</ul>s
+</li>
+</script>
+
+
+<script type="text/ng-template" id="Menu.html">
+<li class="dropdown" ng-repeat="row in Menu"  >
+<a  ui-sref="{{row.route}}" class="dropdown-toggle" data-toggle="dropdown" >
+<i class="{{row.icon}}"> </i>
+</li>
+</script>-->
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-aria/angular-aria.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-messages/angular-messages.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="bower_components/highcharts-ng/dist/highcharts-ng.js"></script>
+    <script src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
+    <script src="bower_components/highcharts/highcharts.js"></script>
+    <script src="bower_components/highcharts/highcharts-more.js"></script>
+    <script src="bower_components/highcharts/modules/exporting.js"></script>
+    <script src="bower_components/jqueryui/jquery-ui.js"></script>
+    <script src="bower_components/pivottable/dist/pivot.js"></script>
+    <script src="bower_components/a0-angular-storage/dist/angular-storage.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/modules/home/home.js"></script>
+    <script src="scripts/modules/auth/auth.js"></script>
+    <script src="scripts/modules/actions/actions.js"></script>
+    <script src="scripts/modules/user/user.js"></script>
+    <script src="scripts/modules/config/config.js"></script>       
+    <script src="scripts/modules/dashboard/dashboard.js"></script>  
+    <script src="scripts/modules/managers/managers.js"></script>  
+    <script src="scripts/modules/modules/modules.js"></script>  
+    <script src="scripts/modules/permission/permission.js"></script>  
+    <script src="scripts/modules/report/report.js"></script>        
+    <script src="scripts/modules/role/role.js"></script>        
+    <script src="scripts/modules/reportObjects/reportObjects.js"></script>        
+    <script src="scripts/modules/reportsParams/reportsParams.js"></script>  
+    <script src="scripts/modules/table/table.js"></script>
+    <script src="scripts/modules/connections/connections.js"></script>      
+    <script src="scripts/modules/objects/objects.js"></script>   
+    <script src="scripts/modules/reportEngine/reportEngine.js"></script>  
+    <script src="scripts/modules/reportParamsObjects/reportParamsObjects.js"></script>  
+    <script src="scripts/modules/reportTypes/reportTypes.js"></script>
+    <script src="scripts/modules/wizard/wizard.js"></script>
+    <script src="scripts/modules/table/table.js"></script>
+    <script src="scripts/modules/auth/auth.js"></script>
+    <script src="scripts/modules/actions/actions.js"></script>
+     <script src="scripts/modules/kpi/kpi.js"></script>
+    <script src="scripts/gchart_renderers.js"></script>
+    <script src="scripts/getCharts.js"></script>
+    <!-- endbuild -->
+
+    <!-- Menu Toggle Script -->
+    <script>
+        $("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+    </script>
+    </body>
+</html>

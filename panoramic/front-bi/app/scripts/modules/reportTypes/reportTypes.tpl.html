@@ -1,0 +1,152 @@
+<div class="row" ng-init="getReportEngines(); getReportTypes()">
+  <h1 class="page-header">
+    ReportTypes  
+    <small>   <button type="button" class="btn btn-success" ng-click="showNewForm=true" ng-show="!showNewForm"> Nuevo</button> </small>
+  </h1> 
+
+  <div class="box-body">
+    <div class="col-lg-12" ng-show="successMsg">
+      <div class="alert alert-success alert-dismissible"> Los cambios fueron realizados.</div>
+    </div>
+
+     <div class="col-lg-12" ng-show="errorMsg" >
+      <div class="alert alert-danger alert-dismissible">Se ha producido un error</div>
+    </div>
+  </div>
+
+    <div class="form" ng-show="showNewForm"> 
+     <h3> Nuevo </h3>
+    <form name="FieldForm" ng-submit="save()" novalidate  >
+        <ng-form name="FieldForm">
+        <div class="form-group"  ng-class="{ 'has-error' : FieldForm.name.$invalid }"> 
+          <label> Name:</label>
+          <input type="text" class="form-control" placeholder="name" name="name" ng-model="form.name" required>
+          <p class="help-block" ng-show="FieldForm.name.$invalid">Required</p>
+        </div>
+
+        <div class="form-group"  ng-class="{ 'has-error' : FieldForm.report_engines_id.$invalid }">
+          <label> Report Engine:</label>
+          <select ng-options="a.id as a.name for a in reportEnginesList" name="report_engines_id" ng-model="form.report_engines_id" class="form-control ng-pristine user-success" required>
+            <option value="" class="">Seleccione...</option>
+            </select>
+          <p class="help-block" ng-show="FieldForm.report_engines_id.$invalid">Required</p>
+        </div> 
+
+        <div class="form-group"  ng-class="{ 'has-error' : FieldForm.format.$invalid }"> 
+          <label>JSON Editor:</label>
+       
+         <textarea   class="form-control" placeholder="Ingrese el formato del JSON" json-editor ng-model="form.format" rows="8" name="format" class="form-control" required></textarea>
+			  <p  class="help-block"  ng-show="FieldForm.format.$error.json">Formato Incorrecto!. </p>
+			  <p  class="help-block"  ng-show="FieldForm.format.$isrequired">Required</p>	
+			<pre>
+			{{form.format | json}}
+			</pre>
+		<hr>
+
+        </div> 
+
+        </ng-form>
+        
+        <div class="row text-center">
+        	
+         <button type="submit" class="btn btn-primary" ng-click=""> Guardar</button>
+         <button type="button" class="btn btn-danger" ng-confirm-click="Desea cancelar la operación?" ng-click="showNewForm=false"> Cancelar</button>
+        </div>
+       
+    </form>
+   </div>
+
+
+    <div class="form" ng-show="showEditForm && !showNewForm"> 
+        <h3> Editar  </h3>
+    <form name="formEdit" ng-submit="edit()" novalidate  >
+        <ng-form name="formEdit">
+        
+        <div class="form-group"  ng-class="{ 'has-error' : formEdit.name.$invalid }"> 
+          <label> Name:</label>
+          <input type="text" class="form-control" placeholder="name" name="name" ng-model="dataFormEdit.name" required>
+          <p class="help-block" ng-show="formEdit.name.$invalid">Required</p>
+        </div> 
+
+  
+        <div class="form-group"  ng-class="{ 'has-error' : formEdit.report_engines_id.$invalid }"> 
+           <label> Report Engine:</label>
+			 <select ng-options="a.id as a.name for a in reportEnginesList" name="report_engines_id" ng-model="dataFormEdit.report_engines_id" class="form-control ng-pristine user-success" required>
+            <option value="" class="">Seleccione...</option>
+            </select>
+         
+           <p class="help-block"   ng-show="formEdit.report_engines_id.$invalid">Required</p>
+        </div> 
+
+
+
+         <div class="form-group"  ng-class="{ 'has-error' : formEdit.format.$invalid }"> 
+          <label>JSON Editor:</label>
+       
+         <textarea   class="form-control" placeholder="Ingrese el formato del JSON" json-editor ng-model="dataFormEdit.format" rows="20" name="format" class="form-control" required></textarea>
+			  <p  class="help-block"  ng-show="formEdit.format.$error.json">Formato Incorrecto!.</p>
+			  <p  class="help-block"  ng-show="formEdit.format.$isrequired">Required</p>	
+			<pre>
+			{{dataFormEdit.format | json}}
+			</pre>
+		<hr>
+        </div> 
+
+        </ng-form>
+        
+        <div class="row text-center">
+          
+         <button type="submit" class="btn btn-primary" ng-click=""> Guardar</button>
+         <button type="button" class="btn btn-danger" ng-confirm-click="Desea cancelar la operación?" ng-click="showEditForm=false"> Cancelar</button>
+        </div>
+       
+    </form>
+   </div>
+</div>
+<hr>
+<div class="row">
+	
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">Listado</div>
+  <div class="panel-body">
+    <p> El siguiente listado esta relacionado con los Tipos de Reports y sus formatos registrados en la base de datos</p>
+  </div>
+
+  <!-- Table -->
+  <table class="table respo <td>{{row.is_system}}</td>nsive">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>name</th>
+            <th>format</th>
+            <th>Engine</th>
+            <th>CreatedAt</th>
+            <th>UpdatedAt</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="row in data">
+            <td scope="row">{{row.id}}</td>
+            <td>{{row.name}}</td>
+            <td>  <pre>
+      {{row.format | json}}
+      </pre></td>
+             <td>{{row.report_engines_id.name}}</td>
+            <td>{{row.createdAt | date:'MM/dd/yyyy h:mma' }}</td>
+            <td>{{row.updatedAt | date:'MM/dd/yyyy h:mma'}}</td>
+            <td >
+              <button type="button" class="btn btn-primary" ng-click="loadFormEdit(row.id)" ><i class="fa fa-pencil"> </i></button>
+              <button type="button" class="btn btn-danger"  ng-confirm-click="¿Desea eliminar el registro  {{row.name}}?" ng-click="deleteRow(row.id);" ><i class="fa fa-trash-o"> </i></button>
+            </td>
+
+          </tr>
+
+        </tbody>
+      </table>
+      <p ng-show="data.lenght==0" > No hay registros </p>
+</div>
+
+</div>
+

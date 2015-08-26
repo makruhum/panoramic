@@ -1,0 +1,298 @@
+  <div class="row col-lg-12" ng-init="slider='source'">
+        <div id="bc1" class="btn-group btn-breadcrumb">
+            <a ng-click="setWork(workflow[$index].wizard)"  class="btn btn-default" ng-repeat="row in workflow ">
+              <div><span ng-class="{{workflow[$index].isActive}} ? '{{workflow[$index].activeClass}}' : '{{workflow[$index].inactiveClass}}'"> {{workflow[$index].iconNumber}}<i class="{{workflow[$index].icon}}"></i> </span> <span> {{row.name}}</span></div></a>
+        </div>
+  </div>
+ 
+<!---------------------------------------------------------------------------------------------------------------------------------------------------->
+
+<div ng-switch="slider"  >
+
+
+<!-- Source-->
+  <div class="row col-xs-12 jumbotron" ng-switch-when="source" class="animate"  >
+
+    <div class="bs-callout bs-callout-primary" id="callout-alerts-no-default">
+    <h2> Seleccione la fuente de datos</h2>
+    <p> Tiene la opcion de seleccionar una base de datos registrada en el sistema o cargar un fichero excel.</p>
+
+    </div>
+    <div class="btn btn-primary" ng-click="setSources('source-db')" ><span ><h1> <i class="fa fa-database"></i>  </h1>Base de Datos  </span> </div>
+    <div class="btn btn-success" ng-click="setSources('source-file')"><span ><h1> <i class="fa fa-file-excel-o"></i>  </h1> Archivo Excel </span> </div>  
+  </div>
+<!---------------------------------------------------------------------------------------------------------------------------------------------------->
+
+<!-- Conexiones-->
+<div class="row col-xs-12 " ng-switch-when="db-conexiones" class="animate" ng-init="getConnections(); getManagers();"  >
+ <button type="submit" class="btn btn-primary" ng-click="setWork('db-query')" tabindex="0" ng-disabled="isEmpty(config.Connections)"> siguiente</button>
+  <div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">
+
+        <div class="form"> 
+    <form name="FieldForm" ng-submit="save()" novalidate  >
+        <ng-form name="FieldForm">
+        <div class="form-group" > 
+          <label><h3> Seleccione la Conexión:   </h3></label>
+          <input type="text" class="form-control" placeholder="buscar en los registros existentes" name="searchConnection" ng-model="searchConnection" >
+        </div>
+    
+          <div class="bs-callout bs-callout-primary" >
+         
+          <h4>  <i class="fa fa-database"></i> {{config.Connections.alias}} |
+        {{config.Connections.host}} : {{config.Connections.port}} |
+         User: {{config.Connections.user}}  |
+          Manager: {{config.Connections.managers_id.name}}</h4>
+        </ng-form>
+        </div>
+        
+    </form>
+   </div>
+    </div>
+    <div class="panel-body"></div>
+    <div class="table-responsive">
+      <!-- Table -->
+      <table class="table">
+        <thead>
+          <tr>
+            <th>-</th>
+            <th>ID</th>
+            <th>isSC</th>
+            <th>Alias</th>
+            <th>Host</th>
+            <th>Port</th>
+            <th>User</th>
+            <th>Password</th>
+            <th>Managers</th>
+            <th>CreatedAt</th>
+            <th>UpdatedAt</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="row in data  | filter:searchConnection">
+             <td > <input type='checkbox' ng-click="selectConnection(row)" > </td> 
+            
+            <td scope="row">{{row.id}} </td>
+
+            <td> <div><span ng-class="{{row.is_system}} ? 'badge label-success' : 'badge label-primary'"> 
+                      <i ng-class="{{row.is_system}} ? 'fa fa-check-circle' : 'fa fa-database'"  ></i> 
+                  </span>
+                  </div>
+            </td>
+            <td>{{row.alias}}</td>
+            <td>{{row.host}}</td>
+            <td>{{row.port}}</td>
+            <td>{{row.user}}</td>
+            <td>{{row.password}}</td>
+            <td>{{row.managers_id.name}} <a href=""  data-toggle="tooltip" title="{{row.managers_id}}"> <i class="fa fa-info-circle"></i></a></td>
+            <td>{{row.createdAt | date:'MM/dd/yyyy h:mma' }}</td>
+            <td>{{row.updatedAt | date:'MM/dd/yyyy h:mma'}}</td>
+            <td >
+              <button type="button" class="btn btn-primary" ng-click="loadFormEdit(row.id)" ><i class="fa fa-pencil"> </i></button>
+              <button type="button" class="btn btn-danger"  ng-confirm-click="¿Desea eliminar el registro  {{row.alias}}?" ng-click="deleteRow(row.id);"     ><i class="fa fa-trash-o"> </i></button>
+              <button type="button" class="btn btn-success" ng-click="testConnection(row.id)" data-toggle="tooltip" title="Carlos"><i class="fa fa-gear"> </i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p ng-show="data.lenght==0" > No hay registros </p>
+    </div>
+  </div>
+
+</div>
+<!---------------------------------------------------------------------------------------------------------------------------------------------------->
+
+<!-- query-->
+<div class="row col-xs-12" ng-switch-when="db-query" class="animate" ng-init="getObjects();" >
+ <button type="submit" class="btn btn-primary" ng-click="setWork('db-data')" tabindex="0" ng-disabled="isEmpty(config.Query)"> siguiente</button> 
+    <div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">
+
+        <div class="form"> 
+    <form name="FieldForm" ng-submit="save()" novalidate  >
+        <ng-form name="FieldForm">
+        <div class="form-group" > 
+          <label><h3> Seleccione la Consulta:   </h3></label>
+          <input type="text" class="form-control" placeholder="buscar en los registros existentes" name="searchConnection" ng-model="searchQuery" >
+        </div>
+    
+          <div class="bs-callout bs-callout-primary" >
+         
+          <h4>  <i class="fa fa-database"></i> {{config.Query.name}} |
+        {{config.Query.description}}</h4>
+        </ng-form>
+        </div>
+        
+    </form>
+   </div>
+    </div>
+    <div class="panel-body"></div>
+    <div class="table-responsive">
+      <!-- Table -->
+      <table class="table">
+        <thead>
+          <tr>
+            <th>-</th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Query</th>
+            <th>CreatedAt</th>
+            <th>UpdatedAt</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="row in objectList  | filter:searchQuery">
+             <td > <input type='checkbox' ng-click="selectQuery(row)" > </td> 
+            
+            <td scope="row">{{row.id}} </td>
+
+    
+            </td>
+      
+            <td>{{row.name}}</td>
+            <td>{{row.description}}</td>
+            <td>{{row.query}} <a href=""  data-toggle="tooltip" title="{{row.query}}"> <i class="fa fa-info-circle"></i></a></td>
+            <td>{{row.createdAt | date:'MM/dd/yyyy h:mma' }}</td>
+            <td>{{row.updatedAt | date:'MM/dd/yyyy h:mma'}}</td>
+            <td >
+              <button type="button" class="btn btn-primary" ng-click="loadFormEdit(row.id)" ><i class="fa fa-pencil"> </i></button>
+              <button type="button" class="btn btn-danger"  ng-confirm-click="¿Desea eliminar el registro  {{row.name}}?" ng-click="deleteRow(row.id);"     ><i class="fa fa-trash-o"> </i></button>
+              <button type="button" class="btn btn-success" ng-click="testConnection(row.id)" data-toggle="tooltip" title="Carlos"><i class="fa fa-gear"> </i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p ng-show="data.lenght==0" > No hay registros </p>
+    </div>
+  </div>
+</div>
+
+
+<!---------------------------------------------------------------------------------------------------------------------------------------------------->
+
+<!-- data-->
+<div class="row col-xs-12 " ng-switch-when="db-data" class="animate"  >
+ <button type="submit" class="btn btn-primary" ng-click="setWork('dashboard')" tabindex="0"> siguiente</button> 
+   
+          <div class="panel panel-info" >
+      <div class="panel-heading">
+        <div class="pull-left"><button class="btn btn-danger btn-sm" ng-click="loadFile()"><i class="fa fa-file-excel-o"></i></button>
+          <button ng-click="openModalObjeto('lg')" class="btn btn-success btn-sm" type="button"> <i class="fa fa-cube"></i></button>
+          <span><strong>{{form.name}}:</strong></span>{{form.description}}&nbsp;
+          <select ng-model="limit" ng-init="limit.value=100" ng-options="limit.value for limit in  arrayLimit" ng-change="getFields()">
+           <option value="">Limit
+           </option>
+         </select>      
+       </div>
+       <div class="pull-right">
+         <button class="btn btn-warning btn-sm" ng-init="kpi=false" ng-click="kpi=!kpi"><i class="fa fa-tachometer"></i></button>
+       </div>    
+     </div>
+     <div class="panel-body">
+      <div class='content'>
+        <div ng-hide="!kpi">
+          <form> 
+            <div class="row">              
+              <div class="col-xs-10">           
+                <input type="text" class="form-control" placeholder="Nombre del Indicador">
+              </div>
+              <div class="col-xs-2">           
+                <select class="form-control">
+                  <option>Frecuencia</option>
+                  <option>Diaria</option>
+                  <option>Quincenal</option>
+                  <option>Mensual</option>
+                  <option>Trimestral</option>
+                  <option>Semestral</option>
+                  <option>Anual</option>
+                  <option>Otro</option>
+                </select>
+              </div>
+            </div>
+            <br>            
+            <div class="row">              
+              <div class="col-xs-2">
+                <select class="form-control">
+                  <option>=</option>
+                  <option><</option>
+                  <option><=</option>
+                  <option>></option>
+                  <option>>=</option>
+                </select>
+                <input type="text" class="form-control" placeholder="Objetivo">
+              </div>
+              <div class="col-xs-2">
+                <select class="form-control">
+                  <option>=</option>
+                  <option><</option>
+                  <option><=</option>
+                  <option>></option>
+                  <option>>=</option>
+                </select>
+                <input type="text" class="form-control" placeholder="Advertencia">
+              </div>
+              <div class="col-xs-2">
+                <select class="form-control">
+                  <option>=</option>
+                  <option><</option>
+                  <option><=</option>
+                  <option>></option>
+                  <option>>=</option>
+                </select>
+                <input type="text" class="form-control" placeholder="No Tolerancia">
+              </div>
+            </div>
+            <br>
+            <h5 class="text-success"><i class="fa fa-calculator"></i> Cálculo de Indicador</h5>         
+            <button type="button" class="btn btn-default"><i class="fa fa-plus"></i></button>
+            <button type="button" class="btn btn-default"><i class="fa fa-minus"></i></button>
+            <button type="button" class="btn btn-default"><b>/</b></button>
+            <button type="button" class="btn btn-default"><i class="fa fa-asterisk"></i></button>
+            <button type="button" class="btn btn-default"><b>E</b></button>
+            <button type="button" class="btn btn-default"><i class="fa fa-superscript"></i></button>                  
+            <textarea class="form-control"></textarea>
+            <br>
+            <button class="btn btn-success">Calcular</button>
+          </form>
+        </div>
+        <div id="doublescroll" class="table-responsive" pivot="dataTable" dataTable="dataTable"></div>
+      </div>
+
+    </div>
+  </div>
+ 
+</div>
+
+<!---------------------------------------------------------------------------------------------------------------------------------------------------->
+
+<!-- dashboard-->
+<div class="row col-xs-12 jumbotron" ng-switch-when="dashboard" class="animate"  >
+
+   <div class="bs-callout bs-callout-primary" id="callout-alerts-no-default">
+  <h2> dashboard</h2>
+  </div>
+</div>
+
+<!---------------------------------------------------------------------------------------------------------------------------------------------------->
+
+<!--------------->
+
+<!-- files-->
+<div class="row col-xs-12 jumbotron" ng-switch-when="files" class="animate"  >
+
+   <div class="bs-callout bs-callout-primary" id="callout-alerts-no-default">
+  <h2> files</h2>
+  </div>
+</div>
+
+
+
+
+
+
+</div><!--no borrar-->

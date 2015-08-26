@@ -1,0 +1,131 @@
+<div class="row" ng-init="getManagers()">
+  <h1 class="page-header">
+    Managers
+    <small>  <button type="button" class="btn btn-success" ng-click="showNewForm=true" ng-show="!showNewForm"> Nuevo</button> </small>
+  </h1>
+
+  <div class="box-body">
+    <div class="col-lg-12" ng-show="successMsg">
+      <div class="alert alert-success alert-dismissible"> Los cambios fueron realizados.</div>
+    </div>
+
+     <div class="col-lg-12" ng-show="errorMsg" >
+      <div class="alert alert-danger alert-dismissible">Se ha producido un error</div>
+    </div>
+  </div>
+   
+    <div class="form" ng-show="showNewForm"> 
+     <h3> Nuevo </h3>
+    <form name="FieldForm" ng-submit="save()" novalidate  >
+      <div class="form-group" >
+        <ng-form name="FieldForm">
+
+           <div class="form-group"  ng-class="{ 'has-error' : FieldForm.name.$invalid }">
+            <label> Name:</label>
+            <input type="text" class="form-control" placeholder="Nombre del Manager" name="name" ng-model="form.name" required>
+            <p class="help-block" ng-show="FieldForm.name.$invalid">Required</p>
+            </div>
+
+             <div class="form-group"  ng-class="{ 'has-error' : FieldForm.adapter.$invalid }">
+            <label> Adapter:</label>
+            <input type="text" class="form-control" placeholder="Nombre del adapter" name="adapter" ng-model="form.adapter" required>
+            <p class="help-block" ng-show="FieldForm.adapter.$invalid">Required</p>
+            </div>
+
+          <div class="form-group"  ng-class="{ 'has-error' : FieldForm.description.$invalid }"> 
+		      <label> Description:</label>
+		    <input type="text" class="form-control" placeholder="description" name="description" ng-model="form.description" required>
+		    <p class="help-block" ng-show="FieldForm.description.$invalid">Required</p>
+		 </div>
+
+        </ng-form>
+        </div>
+        <div class="row text-center">
+        	
+         <button type="submit" class="btn btn-primary" ng-click=""> Guardar</button>
+         <button type="button" class="btn btn-danger" ng-confirm-click="Desea cancelar la operación?" ng-click="showNewForm=false"> Cancelar</button>
+        </div>
+    </form>
+   </div>
+
+
+   <div class="form" ng-show="showEditForm && !showNewForm"> 
+     <h3> Editar </h3>
+    <form name="formEdit" ng-submit="edit()" novalidate  >
+        <div class="form-group"  ng-class="{ 'has-error' : formEdit.name.$invalid }">
+        <ng-form name="formEdit">
+
+         <div class="form-group"  ng-class="{ 'has-error' : formEdit.name.$invalid }"> 
+		      <label> Name:</label>
+		    <input type="text" class="form-control" placeholder="name" name="name" ng-model="dataFormEdit.name" required>
+		    <p class="help-block" ng-show="formEdit.name.$invalid">Required</p>
+		 </div> 
+
+
+         <div class="form-group"  ng-class="{ 'has-error' : formEdit.adapter.$invalid }"> 
+		      <label> Adapter:</label>
+		    <input type="text" class="form-control" placeholder="adapter" name="adapter" ng-model="dataFormEdit.adapter" required>
+		    <p class="help-block" ng-show="formEdit.adapter.$invalid">Required</p>
+		 </div> 
+
+		 <div class="form-group"  ng-class="{ 'has-error' : formEdit.description.$invalid }"> 
+		      <label> Description:</label>
+		    <input type="text" class="form-control" placeholder="description" name="description" ng-model="dataFormEdit.description" required>
+		    <p class="help-block" ng-show="formEdit.description.$invalid">Required</p>
+		 </div> 
+
+        </ng-form>
+        </div>
+        <div class="row text-center">
+        	
+         <button type="submit" class="btn btn-primary" ng-click=""> Guardar</button>
+         <button type="button" class="btn btn-danger" ng-confirm-click="Desea cancelar la Operación?" ng-click="showEditForm=false"> Cancelar</button>
+        </div>
+    </form>
+   </div>
+
+</div>
+<hr>
+<div class="row">
+	
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">Listado</div>
+  <div class="panel-body">
+    <p> El siguiente listado esta relacionado con los motores de base de datos a los cuales la apliacion se podra conectar</p>
+  </div>
+
+  <!-- Table -->
+  <table class="table responsive">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Adapter</th>
+            <th>Description</th>
+            <th>CreatedAt</th>
+            <th>UpdatedAt</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="row in data">
+            <td scope="row">{{row.id}}</td>
+            <td>{{row.name}}</td>
+            <td>{{row.adapter}}</td>
+            <td>{{row.description}}</td>
+            <td>{{row.createdAt | date:'MM/dd/yyyy h:mma' }}</td>
+            <td>{{row.updatedAt | date:'MM/dd/yyyy h:mma'}}</td>
+            <td >
+            	<button type="button" class="btn btn-primary" ng-click="loadFormEdit(row.id)" ><i class="fa fa-pencil"> </i></button>
+            	<button type="button" class="btn btn-danger"  ng-confirm-click="¿Desea eliminar el registro  {{row.name}}?" ng-click="deleteRow(row.id);"		  ><i class="fa fa-trash-o"> </i></button>
+            </td>
+
+          </tr>
+
+        </tbody>
+      </table>
+      <p ng-show="data.lenght==0" > No hay registros </p>
+</div>
+
+</div>

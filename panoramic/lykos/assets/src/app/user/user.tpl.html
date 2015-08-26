@@ -1,0 +1,103 @@
+<div class="row" ng-init="getReportEngines(); getReportTypes()">
+  <h1 class="page-header">
+    Users  
+    <small>   <button type="button" class="btn btn-success" ng-click="showNewForm=true" ng-show="!showNewForm"> Nuevo</button> </small>
+  </h1> 
+
+  	
+
+    <div class="form" ng-show="showNewForm"> 
+     <h3> Nuevo </h3>
+    <form name="FieldForm" ng-submit="save()" novalidate  >
+        <ng-form name="FieldForm">
+        <div class="form-group"  ng-class="{ 'has-error' : FieldForm.email.$invalid }"> 
+          <label> Email:</label>
+          <input type="email" class="form-control" placeholder="email" name="email" ng-model="form.email" required>
+          <p class="help-block" ng-show="FieldForm.email.$invalid">Required</p>
+        </div>
+         <div class="form-group"  ng-class="{ 'has-error' : FieldForm.password.$invalid }"> 
+          <label> Password:</label>
+          <input type="password" class="form-control" placeholder="password" name="password" ng-model="form.password" required>
+          <p class="help-block" ng-show="FieldForm.password.$invalid">Required</p>
+        </div>
+        <div class="form-group"  ng-class="{ 'has-error' : FieldForm.rol_id.$invalid }">
+          <label> Rol:</label>
+          <select ng-options="a.id as a.name for a in rolList" name="rol_id" ng-model="form.rol_id" class="form-control ng-pristine user-success">
+            <option value="" class="">Seleccione...</option>
+            </select>
+          <p class="help-block" ng-show="FieldForm.rol_id.$invalid">Required</p>
+        </div> 
+        </ng-form>
+        
+        <div class="row text-center">
+        	
+         <button type="submit" class="btn btn-primary" ng-click=""> Guardar</button>
+         <button type="button" class="btn btn-danger" ng-click="showNewForm=false"> Cancelar</button>
+        </div>
+       
+    </form>
+   </div>
+
+
+    <div class="form" ng-show="showEditForm && !showNewForm"> 
+        <h3> Editar  </h3>
+    <form name="formEdit" ng-submit="edit()" novalidate  >
+        <ng-form name="formEdit">
+          <!--todo -- by fuckings horses-->
+
+        </ng-form>
+        
+        <div class="row text-center">
+          
+         <button type="submit" class="btn btn-primary" ng-click=""> Guardar</button>
+         <button type="button" class="btn btn-danger" ng-click="showEditForm=false"> Cancelar</button>
+        </div>
+       
+    </form>
+   </div>
+</div>
+<hr>
+<div class="row">
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">Listado</div>
+  <div class="panel-body">
+    <p> El siguiente listado esta relacionado con los usuarios registrados en la base de datos</p>
+  </div>
+
+  <!-- Table -->
+  <table class="table respo <td>{{row.is_system}}</td>nsive">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Rol</th>
+
+            <th>CreatedAt</th>
+            <th>UpdatedAt</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="row in data">
+            <td scope="row">{{row.id}}</td>
+            <td>{{row.name}}</td>
+            <td>{{row.format}}</td>
+             <td>{{row.report_engines_id.name}}</td>
+            <td>{{row.createdAt | date:'MM/dd/yyyy h:mma' }}</td>
+            <td>{{row.updatedAt | date:'MM/dd/yyyy h:mma'}}</td>
+            <td >
+              <button type="button" class="btn btn-primary" ng-click="loadFormEdit(row.id)" ><i class="fa fa-pencil"> </i></button>
+              <button type="button" class="btn btn-danger"  ng-click="deleteRow(row.id);"     ><i class="fa fa-trash-o"> </i></button>
+            </td>
+
+          </tr>
+
+        </tbody>
+      </table>
+      <p ng-show="data.lenght==0" > No hay registros </p>
+</div>
+
+</div>
+

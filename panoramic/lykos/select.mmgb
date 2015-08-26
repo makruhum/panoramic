@@ -1,0 +1,10 @@
+## this code is for selectś examples... by horses
+ 
+        <div class="form-group"  ng-class="{ 'has-error' : FieldForm.manager.$invalid }">
+          <label> Manager:</label>
+          <select ng-options="a.id as a.name for a in managersList" name="manager" ng-model="form.managers_id" class="form-control ng-pristine user-success">
+            <option value="" class="">Seleccione...</option>
+          </select>
+
+
+

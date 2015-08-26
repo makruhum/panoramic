@@ -1,0 +1,195 @@
+<div class="row" ng-init="getObjectsReports();getReportTypes(); getObjects();">
+  <h1 class="page-header">
+    Report Objects  
+    <small>   <button type="button" class="btn btn-success" ng-click="showNewForm=true" ng-show="!showNewForm"> Nuevo</button> </small>
+  </h1> 
+  <div class="box-body">
+    <div class="col-lg-12" ng-show="successMsg">
+      <div class="alert alert-success alert-dismissible"> Los cambios fueron realizados.</div>
+    </div>
+    <div class="col-lg-12" ng-show="errorMsg" >
+      <div class="alert alert-danger alert-dismissible">Se ha producido un error</div>
+    </div>
+  </div>  
+  <div class="form " ng-show="!showNewForm"> 
+  <form name="FieldForm" ng-submit="save()" novalidate  >
+    <div  class="panel panel-primary ">
+    <div class="panel-heading">
+    <h3 class="panel-title text-center"><b>Nuevo - Basic Object Report Data</b></h3>
+    </div>
+                
+    <div class="panel-body">
+      <ng-form name="FieldForm">
+          <div class="form-group col-lg-12"  ng-class="{ 'has-error' : FieldForm.name.$invalid }"> 
+        <label> Name:</label>
+        <input type="text" class="form-control" placeholder="name" name="name" ng-model="form.name" required>
+        <p class="help-block" ng-show="FieldForm.name.$invalid">Required</p>
+      </div>
+      <div class="form-group col-lg-12"  ng-class="{ 'has-error' : FieldForm.description.$invalid }"> 
+        <label> Description:</label>
+        <input type="text" class="form-control" placeholder="description" name="description" ng-model="form.description" required>
+      <p class="help-block" ng-show="FieldForm.description.$invalid">Required</p>
+      </div>
+      <div class="form-group col-lg-12"  ng-class="{ 'has-error' : FieldForm.objects_id.$invalid }">
+        <label> Objeto:</label>
+        <select ng-change="getColumns(form.objects_id);" 
+                ng-disabled="(dataForm.length)" 
+                ng-options="a.id as a.name for a in objectList" name="objects_id" ng-model="form.objects_id" class="form-control ng-pristine user-success">
+          <option value="" class="">Seleccione...</option>
+        </select>
+        <p class="help-block" ng-show="FieldForm.objects_id.$invalid">Required</p>
+      </div> 
+     <div class="form-group col-lg-12"  ng-class="{ 'has-error' : FieldForm.report_types_id.$invalid }">
+        <label> Tipo Grafica:</label>
+        <select ng-options="a.id as a.name for a in reportTypesList"
+        name="report_types_id" ng-model="form.report_types_id" 
+        ng-change="getParams(form.report_types_id);"
+         ng-disabled="(dataForm.length)" 
+        class="form-control ng-pristine user-success">
+        <option value="" class="">Seleccione...</option>
+      </select>
+      <p class="help-block" ng-show="FieldForm.report_types_id.$invalid">Required</p>
+    </div>
+    </ng-form>  
+    </div>
+    </div>
+     <div class="container" ng-show="dynamicForm.length">
+      <div class=" form-group  row">
+        <div class="col-md-6 ">
+            <div  class="panel panel-primary ">
+            <div class="panel-heading clearfix">
+            <h3 class="panel-title pull-left" ><b>Dynamic Form Charts</b></h3>
+            <div class="btn-group pull-right">
+            <a   ng-click="clearParams();" class="btn btn-success btn-sm">R</a>
+            <a  ng-click="getColumns(10);" class="btn btn-warning btn-sm">Table</a>
+            <a  class="btn btn-danger btn-sm">L/U</a>
+            </div>
+            </div>
+            <ng-form role="form" name="FieldFormParams" class="form  ">                   
+            <div class="panel-body">
+        
+            <div  ng-repeat="fields in dynamicForm" class="form-group">
+            <label class="control-label col-sm-6" for="parametro">{{fields.param_name}}</label>
+            <div class="col-sm-6" ng-class="{ 'has-error' : FieldFormParams.arrayParams{{$index}}.$invalid }">
+            <select class="form-control"
+                    name="arrayParams{{$index}}"
+                    ng-change="pushDataForm(fields,objectParamSelected,$index)"
+                    ng-options="o as o for o in objectParamsList" 
+                    ng-model="objectParamSelected"
+                    required
+                    >
+            <option value="" class="">Seleccione...</option>
+            </select>
+            </div>
+            </div>
+            </div>
+            </ng-form>
+
+
+
+            </div>
+
+
+
+        </div>  
+
+        <div class=" col-md-6">
+Example 2
+
+</div>
+
+
+            {{dataForm}}
+
+             {{db.items}}
+        <div class=" col-md-6 " >
+
+        <div  class="panel panel-primary ">
+
+        <div class="panel-heading">
+        <h3 class="panel-title text-center"><b class="ng-binding">Preview Chart</b></h3>
+        </div>
+        <div class="panel-body">
+       <hot-table settings="{rowHeaders: false, contextMenu: true, afterChange: afterChange}" colHeaders="true" datarows="db.items" columns="db.dynamicColumns" height="200" width="250"></hot-table>
+
+        </div>
+
+        </div>
+        </div>
+
+        <div class=" col-md-6 " >
+             
+              <div  class="panel panel-primary ">
+
+              <div class="panel-heading">
+              <h3 class="panel-title text-center"><b class="ng-binding">Preview Chart</b></h3>
+              </div>
+               <div class="panel-body">
+                    <highchart id="chart1" config="chartConfig"></highchart>
+          
+              </div>
+             
+        </div>
+        </div>
+      </div>
+      </div>
+  <div class="container">
+  <div class="col-sm-12">
+  <div clas="row">
+  <div class="form-group col-sm-12"  >
+  </div>
+  </div>
+  </div>
+  </div>
+<div class="row text-center">
+  <button type="submit" class="btn btn-primary" ng-disabled="!((!FieldForm.$invalid) && (dataForm.length!=undefined && dataForm.length>0))" ng-click=""> Guardar</button>
+  <button type="button" class="btn btn-danger" ng-confirm-click="Desea cancelar la operación?"  ng-click="clearNewForm();showNewForm=false"> Cancelar</button>
+</div>
+</form>
+</div>
+</div>
+<hr>
+<div class="row">
+  <div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading">Listado</div>
+    <div class="panel-body">
+      <p> El siguiente listado esta relacionado con los Objetos de Reportes y sus formatos registrados en la base de datos</p>
+    </div>
+    <!-- Table -->
+    <table class="table responsive">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>name</th>
+          <th>description</th>
+          <th>CreatedAt</th>
+          <th>UpdatedAt</th>
+          <th>Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="row in data">
+          <td scope="row">{{row.id}}</td>
+          <td>{{row.name}}</td>
+          <td>{{row.description}}</td>
+          <td>{{row.createdAt | date:'MM/dd/yyyy h:mma' }}</td>
+          <td>{{row.updatedAt | date:'MM/dd/yyyy h:mma'}}</td>
+          <td >
+            <button type="button" class="btn btn-primary" ng-click="loadFormEdit(row.id)" ><i class="fa fa-pencil"> </i></button>
+            <button type="button" class="btn btn-danger" ng-confirm-click="¿Desea eliminar el registro  {{row.name}}?"  ng-click="deleteRow(row.id);"     ><i class="fa fa-trash-o"> </i></button>
+            <button type="button" 
+            class="btn btn-success"   
+            ng-click="getChartbyId(row);"     ><i class="fa fa-bar-chart-o"> </i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p ng-show="data.lenght==0" > No hay registros </p>
+</div>
+<div class="jumbotron" >
+  <highchart id="chart1" config="chartConfig"></highchart>
+</div>
+
+</div>

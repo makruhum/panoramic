@@ -1,0 +1,35 @@
+
+<div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2" style="padding-top: 50px;">
+    <div class="panel panel-info" >
+        <div class="panel-heading">
+            <div class="panel-title"><h4>Login</h4></div>
+        </div>
+        <div class="panel-body" >
+            <form class="form-login" name="loginForm" novalidate>
+                <fieldset>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                            <input type="text" class="form-control" name="email" placeholder="Email" data-ng-model="formData.email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                            <input type="password" class="form-control password" name="password" placeholder="Password " data-ng-model="formData.password" required>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary pull-right"  data-ng-click="login()" >
+                            Entrar <i class="fa fa-arrow-circle-right"></i>
+                        </button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+

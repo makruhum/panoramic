@@ -1,0 +1,209 @@
+<div class="row">
+    <div id="bc1" class="btn-group btn-breadcrumb">
+        <a href="#" class="btn btn-default"><i class="fa fa-home"></i></a>
+        <a href="#" class="btn btn-default"><div>Home</div></a>
+        <a href="#" class="btn btn-default"><div>Conexiones</div></a>
+        <a href="#" class="btn btn-default"><div>Objetos - Consultas</div></a>
+        <a href="#" class="btn btn-default"><div>Config Data</div></a>
+        <a href="#" class="btn btn-default"><div><i class="fa fa-bar-chart"> </i> Ver Dashboard</div></a>
+    </div>
+</div>
+<br>
+<div ng-init="getObjects()">
+</div>
+<div class="col-lg-12">
+    <div class="panel panel-info" >
+        <div class="panel-heading">
+            <div class="pull-left"><button class="btn btn-danger btn-sm" ng-click="loadFile()"><i class="fa fa-file-excel-o"></i></button>
+                <button ng-click="openModalObjeto('lg')" class="btn btn-success btn-sm" type="button"> <i class="fa fa-cube"></i></button>
+                <span><strong>{{form.name}}:</strong></span>{{form.description}}&nbsp;
+                <select ng-model="limit" ng-init="limit.value=100" ng-options="limit.value for limit in  arrayLimit" ng-change="getFields()">
+                    <option value="">Limit
+                    </option>
+                </select>      
+            </div>
+            <div class="pull-right">
+                <button class="btn btn-warning btn-sm" ng-init="kpi=false" ng-click="kpi=!kpi"><i class="fa fa-tachometer"></i></button>
+            </div>
+            <div class="row" ng-if="loading" >
+                <i class="fa fa-refresh fa-spin fa-4x"></i>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <div class='content'>
+                <div ng-hide="!kpi">
+                    <form> 
+                        <div class="row">              
+                            <div class="col-xs-10">           
+                                <input type="text" class="form-control" placeholder="Nombre del Indicador" ng-model="form.name">
+                            </div>
+                            <div class="col-xs-2">           
+                                <select class="form-control" ng-model="form.frecKey">
+                                    <option>Frecuencia</option>
+                                    <option>Diaria</option>
+                                    <option>Quincenal</option>
+                                    <option>Mensual</option>
+                                    <option>Trimestral</option>
+                                    <option>Semestral</option>
+                                    <option>Anual</option>
+                                    <option>Otro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <br>            
+                        <div class="row">              
+                            <div class="col-xs-2">
+                                <select class="form-control" ng-model="form.objKey">
+                                    <option>=</option>
+                                    <option><</option>
+                                    <option><=</option>
+                                    <option>></option>
+                                    <option>>=</option>
+                                </select>
+                                <input type="text" class="form-control" placeholder="Objetivo" ng-model="form.objValue">
+                            </div>
+                            <div class="col-xs-2">
+                                <select class="form-control" ng-model="form.warnKey">
+                                    <option>=</option>
+                                    <option><</option>
+                                    <option><=</option>
+                                    <option>></option>
+                                    <option>>=</option>
+                                </select>
+                                <input type="text" class="form-control" placeholder="Advertencia" ng-model="form.warnValue">
+                            </div>
+                            <div class="col-xs-2">
+                                <select class="form-control" ng-model="form.tolKey">
+                                    <option>=</option>
+                                    <option><</option>
+                                    <option><=</option>
+                                    <option>></option>
+                                    <option>>=</option>
+                                </select>
+                                <input type="text" class="form-control" placeholder="No Tolerancia" ng-model="form.tolValue">
+                            </div>
+                        </div>
+                        <br>
+                        <h5 class="text-success"><i class="fa fa-calculator"></i> Cálculo de Indicador</h5>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'1')">1</button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'2')">2</button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'3')">3</button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'4')">4</button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'5')">5</button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'6')">6</button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'7')">7</button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'8')">8</button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'9')">9</button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'0')">0</button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'.')">.</button>      
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'%2B')"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'-')"><i class="fa fa-minus"></i></button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'/')"><b>/</b></button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'*')"><i class="fa fa-asterisk"></i></button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'math.sum()')"><strong>∑</strong></button>
+                        <button type="button" class="btn btn-default"><i class="fa fa-superscript"></i></button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'(')"><b>(</b></button>  
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,')')"><b>)</b></button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'{')"><b>{</b></button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'}')"><b>}</b></button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'WHERE[]')"><b>CONDICIÓN</b></button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'=')"><b>=</b></button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'!=')"><b>!=</b></button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'>')"><b>></b></button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'>=')"><b>>=</b></button>
+                        <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'<')"><b><</b></button>
+                            <button type="button" class="btn btn-default" ng-click="getKPIString(keyboard,'<=')"><b><=</b></button>
+                                <my-metric my-metric-var="string" ng-keypress="getKPIString('keyboard',$event)"></my-metric>
+                                <span id="helpBlock" class="help-block text-center" style="background-color:#4CAE4C; color: #ffffff;"><h3>{{metricNumber}}</h3></span>
+                                <div>
+                                    <button type="button" class="btn btn-primary btn-xs" ng-click="getKPIString('keyboard',field.title)" ng-repeat="field in dataFields">{{field.title}}</button>
+                                </div>
+                                <br>
+                                <button class="btn btn-primary" ng-click="getKPIMetric()">Calcular</button>
+
+                                <button class="btn btn-primary" ng-click="saveKPIMetric()">Guardar</button>
+                                </form>
+                            </div>
+                        <div id="doublescroll" class="table-responsive" pivot="dataTable" dataTable="dataTable">
+
+                           
+
+                        </div>
+                        
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type='text/ng-template' id='ListadoModal.html'> 
+
+    <div class="modal-header panel-primary " ng-init="getObjects();predicate='name';">
+        <h3 class="modal-title">Objetos</h3>
+    </div>
+    <div class="modal-body ">
+        <div class="panel row" ng-show="loading">
+            <i class="fa fa-circle-o-notch"></i>
+        </div>
+
+        <div class="panel panel-info " style="margin-bottom:0px;" ng-show="!loading">
+            <!-- Default panel contents -->
+            <div class="panel-heading "><strong >
+                <input  placeholder="Busqueda..." ng-model="searchText"> </strong> 
+            </div>
+
+            <!-- Tabla -->
+            <table class="table ">
+                <thead>
+                    <tr>
+                        <th class="text-center">  </th>
+                        <th class="text-left">Id</th>
+                        <th class="text-left">Nombre</th>
+                        <th class="text-left">Descripcion</th>
+                        <th class="text-left"></th>
+
+                    </tr>
+                </thead>
+                <tbody style="max-height: 60px;overflow-y: scroll;">
+
+                    <tr  ng-repeat="row in objectList  |  filter:searchText | orderBy:predicate:reverse ">
+                        <td> 
+                            <label class="btn  btn-xs btn-success" ng-click="seleccionar(row)">
+                                <i class="fa fa-cube"></i>
+                            </label> 
+                        </td>
+                        <td class="text-left  ">{{row.id}} </td>
+                        <td class="text-left "> {{row.name}} </td>
+                        <td class="text-left "> {{row.description}} </td>
+                        <td class="text-left ">  </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer " style="margin-top:0px;">
+        <button class="btn btn-danger" ng-click="cancel()">Cancelar</button>
+    </div>
+</script>
+
+<script type="text/javascript">
+    function DoubleScroll(element) {
+        var scrollbar= document.createElement('div');
+        scrollbar.appendChild(document.createElement('div'));
+        scrollbar.style.overflow= 'auto';
+        scrollbar.style.overflowY= 'hidden';
+        scrollbar.style.width= '150px';
+        scrollbar.firstChild.style.width= element.scrollWidth+'px';
+        scrollbar.firstChild.style.paddingTop= '1px';
+        scrollbar.firstChild.appendChild(document.createTextNode('\xA0'));
+        scrollbar.onscroll= function() {
+            element.scrollLeft= scrollbar.scrollLeft;
+        };
+        element.onscroll= function() {
+            scrollbar.scrollLeft= element.scrollLeft;
+        };
+        element.parentNode.insertBefore(scrollbar, element);
+    }
+
+    DoubleScroll(document.getElementById('doublescroll'));

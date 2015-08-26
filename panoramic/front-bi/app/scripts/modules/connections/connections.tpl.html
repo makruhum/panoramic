@@ -1,0 +1,212 @@
+<div class="row" ng-init="getConnections(); getManagers()">
+  <h1 class="page-header">
+    Connections  
+    <small>   <button type="button" class="btn btn-success" ng-click="showNewForm=true" ng-show="!showNewForm"> Nuevo</button> </small>
+  </h1>
+
+  <div class="box-body">
+    <div class="col-lg-12" ng-show="successMsg">
+      <div class="alert alert-success alert-dismissible"> Los cambios fueron realizados.</div>
+    </div>
+
+     <div class="col-lg-12" ng-show="errorMsg" >
+      <div class="alert alert-danger alert-dismissible">Se ha producido un error</div>
+    </div>
+  </div>
+
+    <div class="form" ng-show="showNewForm"> 
+     <h3> Nuevo </h3>
+    <form name="FieldForm" ng-submit="save()" novalidate  >
+        <ng-form name="FieldForm">
+        <div class="form-group"  ng-class="{ 'has-error' : FieldForm.alias.$invalid }"> 
+          <label> Alias:</label>
+          <input type="text" class="form-control" placeholder="Alias" name="alias" ng-model="form.alias" required>
+          <p class="help-block" ng-show="FieldForm.alias.$invalid">Required</p>
+        </div> 
+
+         <div class="form-group"  ng-class="{ 'has-error' : FieldForm.is_system.$invalid }"> 
+           <label> System Connection:</label>
+           <input type="checkbox"  class="form-control" name="is_system" value="true" ng-init="form.is_system=false" ng-model="form.is_system" > 
+           <p class="help-block"   ng-show="FieldForm.is_system.$invalid">Required</p>
+        </div> 
+
+        <div class="form-group"  ng-class="{ 'has-error' : FieldForm.manager.$invalid }">
+          <label> Manager:</label>
+          <select ng-options="a.id as a.name for a in managersList" name="manager" ng-model="form.managers_id" class="form-control ng-pristine user-success" required>
+            <option value="" class="">Seleccione...</option>
+            </select>
+          <p class="help-block" ng-show="FieldForm.manager.$invalid">Required</p>
+        </div> 
+        <div class="form-group"  ng-class="{ 'has-error' : FieldForm.host.$invalid }"> 
+          <label>Host:</label>
+          <input type="text"  class="form-control" placeholder="Nombre del Host" name="host" ng-model="form.host" required>
+          <p class="help-block" ng-show="FieldForm.host.$invalid">Required</p>
+        </div> 
+
+        <div class="form-group"  ng-class="{ 'has-error' : FieldForm.port.$invalid }"> 
+
+          <label>Port:</label>
+          <input type="number" min="0"  class="form-control" placeholder="Port" name="port" ng-model="form.port" required>
+          <p class="help-block" ng-show="FieldForm.port.$invalid">Required</p>
+        </div> 
+
+        <div class="form-group"  ng-class="{ 'has-error' : FieldForm.database.$invalid }"> 
+          <label> DataBase:</label>
+          <input type="text" class="form-control" placeholder="Database" name="database" ng-model="form.database" required>
+          <p class="help-block" ng-show="FieldForm.database.$invalid">Required</p>
+        </div> 
+
+        <div class="form-group"  ng-class="{ 'has-error' : FieldForm.user.$invalid }"> 
+          <label> User:</label>
+          <input type="text" class="form-control" placeholder="User" name="user" ng-model="form.user" required>
+          <p class="help-block" ng-show="FieldForm.user.$invalid">Required</p>
+        </div> 
+
+        <div class="form-group"  ng-class="{ 'has-error' : FieldForm.password.$invalid }"> 
+          <label> Password:</label>
+          <input type="text" class="form-control" placeholder="Password" name="password" ng-model="form.password" required>
+          <p class="help-block" ng-show="FieldForm.password.$invalid">Required</p>
+        </div>
+
+         <div class="form-group"  ng-class="{ 'has-error' : isTested }"> 
+          <button type="button" class="btn btn-primary"  ng-disabled="false" ng-click="testConnection()"> Verificar la Conexion</button>
+          <p class="help-block" ng-show="!isTested">Debe verificar la conexion</p>
+            <p class="help-block" >{{msjTest}}</p>
+        </div>  
+        
+        </ng-form>
+
+        
+        
+        <div class="row text-center">
+        	
+         <button type="submit" class="btn btn-primary" ng-click="" ng-disabled="!isTested"> Guardar</button>
+         <button type="button" class="btn btn-danger" ng-confirm-click="Desea cancelar la operación?" ng-click="showNewForm=false"> Cancelar</button>
+        </div>
+       
+    </form>
+   </div>
+
+
+    <div class="form" ng-show="showEditForm && !showNewForm"> 
+        <h3> Editar  </h3>
+    <form name="formEdit" ng-submit="edit()" novalidate  >
+        <ng-form name="formEdit">
+        
+        <div class="form-group"  ng-class="{ 'has-error' : formEdit.alias.$invalid }"> 
+          <label> Alias:</label>
+          <input type="text" class="form-control" placeholder="Alias" name="alias" ng-model="dataFormEdit.alias" required>
+          <p class="help-block" ng-show="formEdit.alias.$invalid">Required</p>
+        </div> 
+
+  
+        <div class="form-group"  ng-class="{ 'has-error' : formEdit.is_system.$invalid }"> 
+           <label> System Connection:</label>
+           <input type="checkbox"  class="form-control" name="is_system" value="dataFormEdit.is_system" ng-model="dataFormEdit.is_system" > 
+           <p class="help-block"   ng-show="formEdit.is_system.$invalid">Required</p>
+        </div> 
+
+
+
+        <div class="form-group"  ng-class="{ 'has-error' : formEdit.manager.$invalid }">
+          <label> Manager:</label>
+          <select ng-options="a.id as a.name for a in managersList" name="manager" ng-model="dataFormEdit.managers_id" class="form-control ng-pristine user-success">
+            <option value="" class="">Seleccione...</option>
+            </select>
+          <p class="help-block" ng-show="formEdit.manager.$invalid">Required</p>
+        </div> 
+        <div class="form-group"  ng-class="{ 'has-error' : formEdit.host.$invalid }"> 
+          <label>Host:</label>
+          <input type="text"  class="form-control" placeholder="Nombre del Host" name="host" ng-model="dataFormEdit.host" required>
+          <p class="help-block" ng-show="formEdit.host.$invalid">Required</p>
+        </div> 
+
+        <div class="form-group"  ng-class="{ 'has-error' : formEdit.port.$invalid }"> 
+
+          <label>Port:</label>
+          <input type="number" min="0"  class="form-control" placeholder="Port" name="port" ng-model="dataFormEdit.port" required>
+          <p class="help-block" ng-show="formEdit.port.$invalid">Required</p>
+        </div> 
+
+        <div class="form-group"  ng-class="{ 'has-error' : formEdit.database.$invalid }"> 
+          <label> DataBase:</label>
+          <input type="text" class="form-control" placeholder="Database" name="database" ng-model="dataFormEdit.database" required>
+          <p class="help-block" ng-show="formEdit.database.$invalid">Required</p>
+        </div> 
+
+        <div class="form-group"  ng-class="{ 'has-error' : formEdit.user.$invalid }"> 
+          <label> User:</label>
+          <input type="text" class="form-control" placeholder="User" name="user" ng-model="dataFormEdit.user" required>
+          <p class="help-block" ng-show="formEdit.user.$invalid">Required</p>
+        </div> 
+
+        <div class="form-group"  ng-class="{ 'has-error' : formEdit.password.$invalid }"> 
+          <label> Password:</label>
+          <input type="text" class="form-control" placeholder="Password" name="password" ng-model="dataFormEdit.password" required>
+          <p class="help-block" ng-show="formEdit.password.$invalid">Required</p>
+        </div> 
+        </ng-form>
+        
+        <div class="row text-center">
+          
+         <button type="submit" class="btn btn-primary" ng-click=""> Guardar</button>
+         <button type="button" class="btn btn-danger" ng-confirm-click="Desea cancelar la operación?" ng-click="showEditForm=false"> Cancelar</button>
+        </div>
+       
+    </form>
+   </div>
+</div>
+<hr>
+<div class="row">
+	
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">Listado</div>
+  <div class="panel-body">
+    <p> El siguiente listado esta relacionado con las conexiones registradas en la base de datos</p>
+  </div>
+ <div class="table-responsive">
+  <!-- Table -->
+  <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>isSC</th>
+            <th>Alias</th>
+            <th>Host</th>
+             <th>port</th>
+            <th>User</th>
+            <th>Password</th>
+            <th>managers_id</th>
+            <th>CreatedAt</th>
+            <th>UpdatedAt</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="row in data">
+            <td scope="row">{{row.id}}</td>
+            <td>{{row.is_system}}</td>
+            <td>{{row.alias}}</td>
+            <td>{{row.host}}</td>
+            <td>{{row.port}}</td>
+            <td>{{row.user}}</td>
+            <td>{{row.password}}</td>
+            <td>{{row.managers_id.name}} <a href=""  data-toggle="tooltip" title="{{row.managers_id}}"> <i class="fa fa-info-circle"></i></a></td>
+            <td>{{row.createdAt | date:'MM/dd/yyyy h:mma' }}</td>
+            <td>{{row.updatedAt | date:'MM/dd/yyyy h:mma'}}</td>
+            <td >
+              <button type="button" class="btn btn-primary" ng-click="loadFormEdit(row.id)" ><i class="fa fa-pencil"> </i></button>
+              <button type="button" class="btn btn-danger"  ng-confirm-click="¿Desea eliminar el registro  {{row.alias}}?" ng-click="deleteRow(row.id);"     ><i class="fa fa-trash-o"> </i></button>
+              <button type="button" class="btn btn-success" ng-click="testConnection(row.id)" data-toggle="tooltip" title="Carlos"><i class="fa fa-gear"> </i></button>
+            </td>
+
+          </tr>
+
+        </tbody>
+      </table>
+      <p ng-show="data.lenght==0" > No hay registros </p>
+</div>
+ </div>
+</div>
+

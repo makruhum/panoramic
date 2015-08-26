@@ -1,0 +1,13 @@
+/.project
+#modulos de node
+node_modules
+assets/node_modules
+
+#archivos construidos en el front
+assets/build
+assets/vendor
+
+#archivos temporles
+.tmps
+/.tmp/
+#archivos config
